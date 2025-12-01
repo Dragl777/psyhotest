@@ -1,0 +1,16 @@
+.radios label {
+  cursor: pointer;
+  margin-right: 0.5rem;
+}
+
+.radios input[type="radio"] {
+  display: none;
+}
+
+.radios input:checked + span {
+  background-color: #0d6efd;
+  color: white;
+  border-radius: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  display: inline-block;
+}
