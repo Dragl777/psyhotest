@@ -1,9 +1,13 @@
-// === Supabase setup ===
+// ===========================
+// 1. Инициализация Supabase
+// ===========================
 const supabaseUrl = 'https://wpqmvozpgamlwdhnfehy.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwcW12b3pwZ2FtbHdkaG5mZWh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2MTA5NzUsImV4cCI6MjA4MDE4Njk3NX0.t_OuvNIMkgchzw79PCAvVrsF7x21XD0fgQVerBxYDVc';
 const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-// === Категории и вопросы ===
+// ===========================
+// 2. Категории и вопросы
+// ===========================
 const categories = [
   { id: 'hysteroid', title: 'Истероидный тип', questions: [
       'Мне необходимо быть в центре внимания',
@@ -27,7 +31,7 @@ const categories = [
       'Я часто перекладываю ответственность на других'
   ]},
   { id: 'paranoid', title: 'Параноидальный тип', questions: [
-      'Я постоянно подозреваю людей в нечестных намерениях',
+      'Я постоянно подозрева́ю людей в нечестных намерениях',
       'Мне сложно доверять другим',
       'Я часто анализирую мотивы поведения окружающих',
       'Мне нужно знать все подробности о планах и действиях других',
@@ -49,7 +53,9 @@ const categories = [
   ]}
 ];
 
-// === Подготовка вопросов ===
+// ===========================
+// 3. Подготовка и перемешивание вопросов
+// ===========================
 let all = [];
 categories.forEach(cat => cat.questions.forEach((q, idx) => {
   all.push({ id: `${cat.id}_${idx}`, catId: cat.id, catTitle: cat.title, text: q });
@@ -68,7 +74,13 @@ all = shuffle(all);
 const questionsWrap = document.getElementById('questionsWrap');
 const progressEl = document.getElementById('progress');
 
-// === Рендер вопросов ===
+// ===========================
+// 4. Функция для отрисовки вопросов
+// ===========================
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"]/g, s => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[s]));
+}
+
 all.forEach((item, idx) => {
   const q = document.createElement('div');
   q.className = 'question';
@@ -85,11 +97,9 @@ all.forEach((item, idx) => {
   questionsWrap.appendChild(q);
 });
 
-function escapeHtml(str) {
-  return String(str).replace(/[&<>"]/g, s => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[s]));
-}
-
-// === Прогресс ===
+// ===========================
+// 5. Прогресс
+// ===========================
 function updateProgress() {
   const total = all.length;
   const filled = Array.from(document.querySelectorAll('.radios')).length;
@@ -97,7 +107,9 @@ function updateProgress() {
 }
 updateProgress();
 
-// === Подсчёт баллов ===
+// ===========================
+// 6. Подсчёт баллов
+// ===========================
 function calculateScores() {
   const scores = {};
   categories.forEach(c => scores[c.id] = 0);
@@ -110,7 +122,9 @@ function calculateScores() {
   return scores;
 }
 
-// === Интерпретация ===
+// ===========================
+// 7. Интерпретация
+// ===========================
 function interpret(id) {
   const map = {
     hysteroid:'Склонность к яркому самовыражению, потребность в внимании и внешнем одобрении.',
@@ -123,7 +137,21 @@ function interpret(id) {
   return map[id]||'';
 }
 
-// === Отображение результатов ===
+// ===========================
+// 8. Сбор ответов
+// ===========================
+function collectAnswers() {
+  const answers = {};
+  all.forEach((item, idx) => {
+    const radios = document.getElementsByName(`q_${idx}`);
+    for(const r of radios){ if(r.checked){ answers[item.id] = Number(r.value); break; } }
+  });
+  return answers;
+}
+
+// ===========================
+// 9. Показ результатов
+// ===========================
 function showResults() {
   const scores = calculateScores();
   const max = Math.max(...Object.values(scores));
@@ -149,17 +177,9 @@ function showResults() {
   res.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
-// === Сбор ответов ===
-function collectAnswers() {
-  const answers = {};
-  all.forEach((item, idx) => {
-    const radios = document.getElementsByName(`q_${idx}`);
-    for(const r of radios){ if(r.checked){ answers[item.id] = Number(r.value); break; } }
-  });
-  return answers;
-}
-
-// === События ===
+// ===========================
+// 10. События
+// ===========================
 document.addEventListener('change', ev => { if(ev.target && ev.target.matches('.radios input')) updateProgress(); });
 
 document.getElementById('resetBtn').addEventListener('click', function(){
@@ -168,7 +188,9 @@ document.getElementById('resetBtn').addEventListener('click', function(){
   updateProgress();
 });
 
-// === Сохранение и показ результатов ===
+// ===========================
+// 11. Кнопка "Посчитать результат" с записью в Supabase
+// ===========================
 document.getElementById('submitBtn').addEventListener('click', async function() {
   const scores = calculateScores();
   const answers = collectAnswers();
