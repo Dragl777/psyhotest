@@ -1,7 +1,7 @@
 // ===========================
 // 1. Google Forms URL
 // ===========================
-const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSe8mCTEix6iMEr6ulaBLIx-4SUkae4bOMVK4-abO4GwbKpG1A/viewform?usp=dialog"; 
+const FORM_URL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSe8mCTEix6iMEr6ulaBLIx-4SUkae4bOMVK4-abO4GwbKpG1A/formResponse"; 
 // Пример: https://docs.google.com/forms/d/e/ВАШ_FORM_ID/formResponse
 // Не забудьте заменить на ваш URL формы
 
@@ -171,3 +171,4 @@ function showResultModal(scores, leadingTypes){
 // 8. Инициализация
 // ===========================
 showQuestion(currentIndex);
+
