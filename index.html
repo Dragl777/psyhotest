@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Тест на определение типа личности</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Тест на определение типа личности</h1>
+      <p class="lead">Пожалуйста, оцените каждое утверждение по шкале от 1 (совершенно не характерно) до 5 (постоянно).</p>
+
+      <div id="questionsWrap" aria-live="polite"></div>
+
+      <div class="controls">
+        <button id="submitBtn" class="primary">Посчитать результат</button>
+        <button id="resetBtn" class="ghost">Сбросить ответы</button>
+        <div style="margin-left:auto" class="muted" id="progress">Готово: 0 / 30</div>
+      </div>
+
+      <div id="results" class="results" aria-live="polite"></div>
+
+      <p class="muted" style="margin-top:12px">Важно: это не медицинская диагностика. Для профессиональной оценки обратитесь к специалисту.</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="code.js"></script>
+</body>
+</html>

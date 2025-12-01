@@ -1,0 +1,21 @@
+:root{--bg:#f5f7fb;--card:#fff;--accent:#4b6bff;--muted:#6b7280}
+body{margin:0;font-family:Inter, Roboto, Helvetica, Arial, sans-serif;background:var(--bg);color:#111}
+.wrap{max-width:980px;margin:28px auto;padding:20px}
+.card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 6px 20px rgba(16,24,40,0.06)}
+h1{margin:0 0 6px;font-size:20px}
+p.lead{margin:0 0 16px;color:var(--muted);font-size:14px}
+.question{padding:12px;border-radius:8px;border:1px solid #eef2ff;background:linear-gradient(180deg,#fff, #fbfdff);display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.q-text{flex:1}
+.radios{display:flex;gap:6px}
+.radios label{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;border:1px solid #e6eefc;cursor:pointer}
+.radios input{display:none}
+.radios input:checked + span{background:var(--accent);color:white;border-color:var(--accent)}
+.controls{display:flex;gap:10px;align-items:center;margin-top:16px}
+button{border:0;padding:10px 14px;border-radius:8px;cursor:pointer}
+button.primary{background:var(--accent);color:white}
+button.ghost{background:transparent;border:1px solid #d1d5db}
+.results{margin-top:18px}
+.result-box{padding:14px;background:#f8fafc;border-radius:8px;border:1px solid #e6eefc}
+.scores{display:grid;grid-template-columns:1fr auto;gap:8px}
+.muted{color:var(--muted);font-size:13px}
+@media(max-width:720px){.radios{gap:4px}.radios label{width:32px;height:32px}}
