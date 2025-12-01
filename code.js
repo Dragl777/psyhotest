@@ -1,4 +1,9 @@
-// Категории и вопросы
+// === Supabase setup ===
+const supabaseUrl = 'https://wpqmvozpgamlwdhnfehy.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwcW12b3pwZ2FtbHdkaG5mZWh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2MTA5NzUsImV4cCI6MjA4MDE4Njk3NX0.t_OuvNIMkgchzw79PCAvVrsF7x21XD0fgQVerBxYDVc';
+const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+// === Категории и вопросы ===
 const categories = [
   { id: 'hysteroid', title: 'Истероидный тип', questions: [
       'Мне необходимо быть в центре внимания',
@@ -44,6 +49,7 @@ const categories = [
   ]}
 ];
 
+// === Подготовка вопросов ===
 let all = [];
 categories.forEach(cat => cat.questions.forEach((q, idx) => {
   all.push({ id: `${cat.id}_${idx}`, catId: cat.id, catTitle: cat.title, text: q });
@@ -62,6 +68,7 @@ all = shuffle(all);
 const questionsWrap = document.getElementById('questionsWrap');
 const progressEl = document.getElementById('progress');
 
+// === Рендер вопросов ===
 all.forEach((item, idx) => {
   const q = document.createElement('div');
   q.className = 'question';
@@ -82,6 +89,7 @@ function escapeHtml(str) {
   return String(str).replace(/[&<>"]/g, s => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[s]));
 }
 
+// === Прогресс ===
 function updateProgress() {
   const total = all.length;
   const filled = Array.from(document.querySelectorAll('.radios')).length;
@@ -89,6 +97,7 @@ function updateProgress() {
 }
 updateProgress();
 
+// === Подсчёт баллов ===
 function calculateScores() {
   const scores = {};
   categories.forEach(c => scores[c.id] = 0);
@@ -101,6 +110,7 @@ function calculateScores() {
   return scores;
 }
 
+// === Интерпретация ===
 function interpret(id) {
   const map = {
     hysteroid:'Склонность к яркому самовыражению, потребность в внимании и внешнем одобрении.',
@@ -113,6 +123,7 @@ function interpret(id) {
   return map[id]||'';
 }
 
+// === Отображение результатов ===
 function showResults() {
   const scores = calculateScores();
   const max = Math.max(...Object.values(scores));
@@ -131,26 +142,14 @@ function showResults() {
   } else {
     html += '<h3>Ничья между:</h3><ul>';
     winners.forEach(w => html += `<li>${categories.find(c=>c.id===w).title} — ${scores[w]} баллов</li>`);
-    html += '</ul><p class="muted">Если ничья, посмотрите на ответы: возможно, у вас смешанные черты нескольких типов.</p>';
+    html += '</ul><p class="muted">Если ничья, у вас смешанные черты нескольких типов.</p>';
   }
   html += '</div>';
   res.innerHTML = html;
   res.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
-// Обновление прогресса при изменении
-document.addEventListener('change', ev => { if(ev.target && ev.target.matches('.radios input')) updateProgress(); });
-document.getElementById('resetBtn').addEventListener('click', function(){
-  document.querySelectorAll('.radios').forEach(group => { group.querySelectorAll('input').forEach(inp => inp.checked = (inp.value==='1')); });
-  document.getElementById('results').innerHTML = '';
-  updateProgress();
-});
-
-// Supabase setup
-const supabaseUrl = 'https://wpqmvozpgamlwdhnfehy.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwcW12b3pwZ2FtbHdkaG5mZWh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2MTA5NzUsImV4cCI6MjA4MDE4Njk3NX0.t_OuvNIMkgchzw79PCAvVrsF7x21XD0fgQVerBxYDVc';
-const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
-
+// === Сбор ответов ===
 function collectAnswers() {
   const answers = {};
   all.forEach((item, idx) => {
@@ -160,15 +159,31 @@ function collectAnswers() {
   return answers;
 }
 
+// === События ===
+document.addEventListener('change', ev => { if(ev.target && ev.target.matches('.radios input')) updateProgress(); });
+
+document.getElementById('resetBtn').addEventListener('click', function(){
+  document.querySelectorAll('.radios').forEach(group => { group.querySelectorAll('input').forEach(inp => inp.checked = (inp.value==='1')); });
+  document.getElementById('results').innerHTML = '';
+  updateProgress();
+});
+
+// === Сохранение и показ результатов ===
 document.getElementById('submitBtn').addEventListener('click', async function() {
   const scores = calculateScores();
   const answers = collectAnswers();
   const max = Math.max(...Object.values(scores));
   const leadingTypes = Object.keys(scores).filter(k => scores[k]===max);
 
-  const { data, error } = await supabase.from('results').insert([{ scores, leadingTypes, answers, created_at: new Date().toISOString() }]);
-  if(error){ console.error('Ошибка сохранения в Supabase:', error); }
-  else{ console.log('Результат сохранён:', data); }
+  try {
+    const { data, error } = await supabase
+      .from('results')
+      .insert([{ scores, leadingTypes, answers, created_at: new Date().toISOString() }]);
+    if(error) throw error;
+    console.log('Результат сохранён:', data);
+  } catch(err) {
+    console.error('Ошибка сохранения в Supabase:', err);
+  }
 
   showResults();
 });
