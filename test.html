@@ -211,7 +211,13 @@ function showResults(){
 
 // События
 document.getElementById('submitBtn').addEventListener('click', function(){
+  const scores = calculateScores();
+  const answers = collectAnswers();
+  const max = Math.max(...Object.values(scores));
+  const leadingTypes = Object.keys(scores).filter(k => scores[k] === max);
+  saveResult({ scores, leadingTypes, answers });
   showResults();
+});
 });
 
 // Сброс: вернуть все радиокнопки к 1 и убрать результаты
@@ -230,5 +236,30 @@ document.addEventListener('change', function(ev){
 });
 
 </script>
-</body>
-</html>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script>
+    // TODO: вставьте свои данные Firebase ниже
+    const firebaseConfig = {
+  apiKey: "AIzaSyBrOsc_UnKjDeFyh4ZTg49ncp0EjZI7Bg8",
+  authDomain: "psyotest.firebaseapp.com",
+  projectId: "psyotest",
+  storageBucket: "psyotest.firebasestorage.app",
+  messagingSenderId: "1054437948182",
+  appId: "1:1054437948182:web:e964dec5056b20ecdeee37",
+  measurementId: "G-SBWN62G01P"
+};
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    async function saveResult(result) {
+      try {
+        await db.collection("personality_results").add({
+          ...result,
+          timestamp: new Date().toISOString()
+        });
+        console.log("Результат сохранён в Firestore");
+      } catch (e) {
+        console.error("Ошибка сохранения:", e);
+      }
