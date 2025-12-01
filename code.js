@@ -1,7 +1,7 @@
 // ===========================
 // 1. Google Sheets URL (Apps Script Web App)
 // ===========================
-const GAS_URL = "https://script.google.com/macros/s/AKfycbx35NFKDmZPzFkAYVwoh4OfQafLKSoXhU3sc5B_8pcLc4iv9kTL6I6Cu2TZ6Bvuocw/exec"; // <-- замените на ваш URL веб-приложения Apps Script
+const GAS_URL = "https://script.google.com/macros/s/AKfycbylLlHagQQ4w_oTNwXwgXwlQw_kN0n62tgbL1cZMzWA5NCj89XkkE3nJ0mQT9wH3G3Y/exec"; // <-- замените на ваш URL веб-приложения Apps Script
 
 // ===========================
 // 2. Категории и вопросы
@@ -159,3 +159,4 @@ function showResultModal(scores,leadingTypes){
 // 7. Инициализация
 // ===========================
 showQuestion(currentIndex);
+
