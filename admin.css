@@ -1,0 +1,4 @@
+body { font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+.table thead.sticky-top { position: sticky; top: 0; z-index: 1; }
+.sortable { cursor: pointer; user-select: none; }
+#resultsBody tr:hover { background: rgba(13,110,253,0.03); cursor: pointer; }
