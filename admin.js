@@ -201,4 +201,19 @@ function renderCharts(){
   });
 
   // Line chart
-  const ctxLine = document.getElementById("lineCha
+  const ctxLine = document.getElementById("lineChart").getContext("2d");
+  if(lineChart) lineChart.destroy();
+  const sortedDates = Object.keys(dateCounts).sort();
+  lineChart = new Chart(ctxLine,{
+    type:"line",
+    data:{
+      labels:sortedDates,
+      datasets:[{
+        label:"Кол-во прохождений",
+        data:sortedDates.map(d=>dateCounts[d]),
+        borderColor:"#36A2EB",
+        fill:false
+      }]
+    }
+  });
+}
