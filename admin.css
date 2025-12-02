@@ -1,9 +1,0 @@
-body {
-  font-family: Inter, Roboto, Helvetica, Arial, sans-serif;
-}
-.sortable {
-  cursor: pointer;
-}
-table td, table th {
-  vertical-align: middle !important;
-}
